@@ -1,55 +1,94 @@
-import { FeatureLdg, InfoLdg, TestimonialType } from "types";
+import { FeatureLdg, InfoLdg, MarqueeData, TestimonialType } from "types";
 
 export const infos: InfoLdg[] = [
   {
-    title: "Empower your projects",
+    title: "Enhance Your Content Creation",
     description:
-      "Unlock the full potential of your projects with our open-source SaaS platform. Collaborate seamlessly, innovate effortlessly, and scale limitlessly.",
-    image: "/_static/illustrations/work-from-home.jpg",
+      "Unlock the power of AI-driven thumbnails with ThumbforgeAI. Create eye-catching visuals, optimize for engagement, and bring your ideas to life effortlessly.",
+    image: "/_static/images/image10.jpeg",
     list: [
       {
-        title: "Collaborative",
-        description: "Work together with your team members in real-time.",
-        icon: "laptop",
+        title: "AI-Powered",
+        description: "Generate stunning, custom thumbnails in seconds using advanced AI technology.",
+        icon: "robot",
       },
       {
-        title: "Innovative",
-        description: "Stay ahead of the curve with access constant updates.",
-        icon: "settings",
+        title: "User-Friendly",
+        description: "Easily customize thumbnails with intuitive tools and real-time previews.",
+        icon: "palette",
       },
       {
-        title: "Scalable",
+        title: "Optimized for Growth",
         description:
-          "Our platform offers the scalability needed to adapt to your needs.",
-        icon: "search",
+          "Boost your engagement with thumbnails tailored to your audience and platform needs.",
+        icon: "chart",
       },
     ],
   },
   {
-    title: "Seamless Integration",
+    title: "Seamless Integration & Collaboration",
     description:
-      "Integrate our open-source SaaS seamlessly into your existing workflows. Effortlessly connect with your favorite tools and services for a streamlined experience.",
-    image: "/_static/illustrations/work-from-home.jpg",
+      "Integrate ThumbforgeAI seamlessly into your workflow. Collaborate with your team, connect with your favorite tools, and stay productive with ease.",
+    image: "/_static/images/image11.jpeg",
     list: [
       {
-        title: "Flexible",
+        title: "Collaborative",
         description:
-          "Customize your integrations to fit your unique requirements.",
-        icon: "laptop",
+          "Work alongside team members to develop cohesive and engaging thumbnails in real-time.",
+        icon: "users",
       },
       {
-        title: "Efficient",
-        description: "Streamline your processes and reducing manual effort.",
-        icon: "search",
+        title: "Effortless Integration",
+        description: "Integrate with existing tools to streamline your design process.",
+        icon: "plug",
       },
       {
-        title: "Reliable",
+        title: "Reliable Performance",
         description:
-          "Rely on our robust infrastructure and comprehensive documentation.",
-        icon: "settings",
+          "Depend on our stable infrastructure and dedicated support for uninterrupted creativity.",
+        icon: "shield",
       },
     ],
   },
+];
+
+export const marqueeList: MarqueeData[] = [
+  {
+    id: '1',
+    image: '/_static/images/image1.jpeg'
+  },
+  {
+    id: '2',
+    image: '/_static/images/image2.jpeg'
+  },
+  {
+    id: '3',
+    image: '/_static/images/image3.jpeg'
+  },
+  {
+    id: '4',
+    image: '/_static/images/image4.webp'
+  },
+  {
+    id: '5',
+    image: '/_static/images/image5.jpeg'
+  },
+  {
+    id: '6',
+    image: '/_static/images/image6.jpeg'
+  },
+  {
+    id: '7',
+    image: '/_static/images/image7.jpeg'
+  },
+  {
+    id: '8',
+    image: '/_static/images/image8.jpeg'
+  },
+  {
+    id: '9',
+    image: '/_static/images/image9.jpeg'
+  }
 ];
 
 export const features: FeatureLdg[] = [

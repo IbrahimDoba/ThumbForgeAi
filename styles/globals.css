@@ -90,3 +90,25 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+.animated-border {
+  padding: 4px; /* Space for the gradient border */
+  border-radius: 16px; /* Matches inner border radius */
+  background: linear-gradient(90deg, #8a2be2, #6a5acd, #00bfff, #1e90ff);
+    background-size: 100% 100%; /* Makes background larger for animation */
+  animation: gradient-animation 3s linear infinite;
+}
+
+.inner-content {
+  border-radius: 16px; /* Inner border radius */
+  background: black; /* Background for inner content */
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}

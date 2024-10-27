@@ -3,6 +3,8 @@ import {
   ArrowRight,
   ArrowUpRight,
   BookOpen,
+  Bot,
+  ChartLine,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -23,13 +25,17 @@ import {
   Moon,
   MoreVertical,
   Package,
+  Palette,
+  Plug,
   Plus,
   Puzzle,
   Search,
   Settings,
+  Shield,
   SunMedium,
   Trash,
   User,
+  Users,
   X,
 } from "lucide-react";
 
@@ -46,8 +52,14 @@ export const Icons = {
   check: Check,
   close: X,
   copy: Copy,
+  robot: Bot,
+  palette:Palette,
+  chart: ChartLine,
   dashboard: LayoutPanelLeft,
   ellipsis: MoreVertical,
+  users: Users,
+  plug:Plug,
+  shield:Shield,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
@@ -134,4 +146,5 @@ export const Icons = {
   ),
   user: User,
   warning: AlertTriangle,
+  
 };

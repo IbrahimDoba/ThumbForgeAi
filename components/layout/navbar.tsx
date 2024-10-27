@@ -4,7 +4,6 @@ import { useContext } from "react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { useSession } from "next-auth/react";
-
 import { docsConfig } from "@/config/docs";
 import { marketingConfig } from "@/config/marketing";
 import { siteConfig } from "@/config/site";
@@ -16,6 +15,9 @@ import { DocsSearch } from "@/components/docs/search";
 import { ModalContext } from "@/components/modals/providers";
 import { Icons } from "@/components/shared/icons";
 import MaxWidthWrapper from "@/components/shared/max-width-wrapper";
+import svglogo from '/assets/svg/Mainlogo.svg'
+import Image from "next/image";
+
 
 interface NavBarProps {
   scroll?: boolean;
@@ -39,17 +41,16 @@ export function NavBar({ scroll = false }: NavBarProps) {
 
   return (
     <header
-      className={`sticky top-0 z-40 flex w-full justify-center bg-background/60 backdrop-blur-xl transition-all ${
+      className={`sticky top-0 z-40 flex w-full justify-center bg-background/60 backdrop-blur-xl transition-all p-2  ${
         scroll ? (scrolled ? "border-b" : "bg-transparent") : "border-b"
       }`}
     >
       <MaxWidthWrapper
         className="flex h-14 items-center justify-between py-4"
-        large={documentation}
       >
         <div className="flex gap-6 md:gap-10">
           <Link href="/" className="flex items-center space-x-1.5">
-            <Icons.logo />
+            <Image src={svglogo} alt="logo" width={30} height={30}/>
             <span className="font-urban text-xl font-bold">
               {siteConfig.name}
             </span>
@@ -122,7 +123,7 @@ export function NavBar({ scroll = false }: NavBarProps) {
               rounded="full"
               onClick={() => setShowSignInModal(true)}
             >
-              <span>Sign In</span>
+              <span>Get Started</span>
               <Icons.arrowRight className="size-4" />
             </Button>
           ) : (

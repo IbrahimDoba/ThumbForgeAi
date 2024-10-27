@@ -80,6 +80,11 @@ export type InfoList = {
   description: string;
 };
 
+export type MarqueeData = {
+  id: string;
+  image: any;
+}
+
 export type InfoLdg = {
   title: string;
   image: string;
