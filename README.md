@@ -31,4 +31,4 @@ ThumbForgeAI is a powerful tool that enables creators to effortlessly generate h
 Clone this repository and get started with the following commands:
 
 ```bash
-npx create-next-app thumbforgeai --example "https://github.com/yourusername/thumbforgeai"
+npx create-next-app thumbforgeai --example "https://github.com/IbrahimDoba/thumbforgeai"
