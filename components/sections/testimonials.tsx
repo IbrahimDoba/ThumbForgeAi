@@ -8,7 +8,7 @@ export default function Testimonials() {
     <section>
       <div className="container flex max-w-6xl flex-col gap-10 py-32 sm:gap-y-16">
         <HeaderSection
-          label="Testimonials"
+          label="Reviews"
           title="What our clients are sharing."
           subtitle="Discover the glowing feedback from our delighted customers
             worldwide."
@@ -17,7 +17,7 @@ export default function Testimonials() {
         <div className="column-1 gap-5 space-y-5 md:columns-2 lg:columns-3 ">
           {testimonials.map((item) => (
             <div className="break-inside-avoid" key={item.name}>
-              <div className="relative rounded-xl border bg-muted/25">
+              <div className="relative rounded-xl border border-gray-600 bg-muted/25">
                 <div className="flex flex-col px-4 py-5 sm:p-6">
                   <div>
                     <div className="relative mb-4 flex items-center gap-3">

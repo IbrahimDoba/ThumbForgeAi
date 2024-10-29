@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { footerLinks, siteConfig } from "@/config/site";
@@ -7,6 +8,7 @@ import { ModeToggle } from "@/components/layout/mode-toggle";
 
 import { NewsletterForm } from "../forms/newsletter-form";
 import { Icons } from "../shared/icons";
+import svglogo from "/assets/svg/Mainlogo.svg";
 
 export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
   return (
@@ -32,7 +34,13 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
           </div>
         ))}
         <div className="col-span-full flex flex-col items-end sm:col-span-1 md:col-span-2">
-          <NewsletterForm />
+          {/* <NewsletterForm /> */}
+          <Link href="/" className="flex items-center space-x-1.5">
+            <Image src={svglogo} alt="logo" width={30} height={30} />
+            <span className="font-urban text-xl font-bold">
+              {siteConfig.name}
+            </span>
+          </Link>
         </div>
       </div>
 
@@ -47,9 +55,18 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               href={siteConfig.links.twitter}
               target="_blank"
               rel="noreferrer"
-              className="font-medium underline underline-offset-4"
+              className="font-medium underline underline-offset-4 mr-2"
             >
-              mickasmt
+              Ibrahim
+            </Link>
+            and
+            <Link
+              href='https://github.com/taqh'
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium underline underline-offset-4 ml-2"
+            >
+              Taqib
             </Link>
             . Hosted on{" "}
             <Link
@@ -59,15 +76,6 @@ export function SiteFooter({ className }: React.HTMLAttributes<HTMLElement>) {
               className="font-medium underline underline-offset-4"
             >
               Vercel
-            </Link>
-            . Illustrations by{" "}
-            <Link
-              href="https://popsy.co"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-4"
-            >
-              Popsy
             </Link>
           </p>
 

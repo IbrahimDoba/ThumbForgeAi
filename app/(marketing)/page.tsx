@@ -16,7 +16,7 @@ export default function IndexPage() {
       <BentoGrid />
       <InfoLanding data={infos[0]} reverse={true} />
       <InfoLanding data={infos[1]} />
-      <Features />
+      {/* <Features /> */}
       <Testimonials />
     </>
   );

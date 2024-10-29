@@ -1,16 +1,17 @@
 import authConfig from "@/auth.config";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-// import { UserRole } from "@/drizzle/schema"; // Define `UserRole` in your Drizzle schema
+import { UserRole } from "@/drizzle/schema";
 import NextAuth, { type DefaultSession } from "next-auth";
 
 import { db } from "@/lib/db"; // Ensure `db` is configured for Drizzle
 import { getUserById } from "@/lib/user"; // Update getUserById to use Drizzle
 
+
 // Augment NextAuth's session type
 declare module "next-auth" {
   interface Session {
     user: {
-      // role: UserRole;
+      role: UsersRole;
     } & DefaultSession["user"];
   }
 }
@@ -29,7 +30,7 @@ export const {
       if (session.user) {
         session.user.id = token.sub ?? null;
         session.user.email = token.email ?? null;
-        // session.user.role = token.role as UserRole;
+        session.user.role = token.role as UserRole;
         session.user.name = token.name ?? null;
         session.user.image = token.picture ?? null;
       }
@@ -47,7 +48,7 @@ export const {
       token.name = dbUser.name;
       token.email = dbUser.email;
       token.picture = dbUser.image;
-      // token.role = dbUser.role;
+      token.role = dbUser.role;
 
       return token;
     },
