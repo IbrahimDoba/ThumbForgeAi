@@ -1,57 +1,42 @@
-import authConfig from "@/auth.config";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { UserRole } from "@/drizzle/schema";
-import NextAuth, { type DefaultSession } from "next-auth";
+import NextAuth from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+import DiscordProvider from "next-auth/providers/discord"
+import { DrizzleAdapter } from "@auth/drizzle-adapter"
+import { db } from "./lib/db"
 
-import { db } from "@/lib/db"; // Ensure `db` is configured for Drizzle
-import { getUserById } from "@/lib/user"; // Update getUserById to use Drizzle
-
-
-// Augment NextAuth's session type
-declare module "next-auth" {
-  interface Session {
-    user: {
-      role: UsersRole;
-    } & DefaultSession["user"];
-  }
-}
-
-export const {
-  handlers: { GET, POST },
-  auth,
-} = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
-  session: { strategy: "jwt" },
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+    }),
+  ],
+  session: {
+    strategy: "jwt",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+        token.subscriptionPlan = user.subscriptionPlan
+      }
+      return token
+    },
+    async session({ session, token }) {
+      console.log(session)
+      if (session.user) {
+        session.user.id = token.id as string
+        session.user.subscriptionPlan = token.subscriptionPlan as string
+      }
+      return session
+    },
+  },
   pages: {
     signIn: "/login",
   },
-  callbacks: {
-    async session({ token, session }) {
-      if (session.user) {
-        session.user.id = token.sub ?? null;
-        session.user.email = token.email ?? null;
-        session.user.role = token.role as UserRole;
-        session.user.name = token.name ?? null;
-        session.user.image = token.picture ?? null;
-      }
-
-      return session;
-    },
-
-    async jwt({ token }) {
-      if (!token.sub) return token;
-
-      const dbUser = await getUserById(token.sub); // Ensure this uses Drizzle for retrieval
-
-      if (!dbUser) return token;
-
-      token.name = dbUser.name;
-      token.email = dbUser.email;
-      token.picture = dbUser.image;
-      token.role = dbUser.role;
-
-      return token;
-    },
-  },
-  ...authConfig,
-});
+})

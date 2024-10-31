@@ -20,6 +20,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "randomuser.me",
       },
+      {
+        protocol: 'https',
+        hostname: 'ideogram.ai',
+        // pathname: '/api/images/ephemeral/**',
+      },
     ],
   },
   experimental: {

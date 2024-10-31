@@ -9,17 +9,9 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
-import { EdgeStoreProvider, useEdgeStore } from '@/lib/edgestore'
+import { useRouter } from 'next/navigation'
 
 export default function GeneratorModal() {
-  return (
-    <EdgeStoreProvider>
-      <GeneratorModalContent />
-    </EdgeStoreProvider>
-  )
-}
-
-function GeneratorModalContent() {
   const [open, setOpen] = useState(false)
   const [mainPrompt, setMainPrompt] = useState("")
   const [thumbnailText, setThumbnailText] = useState("")
@@ -31,7 +23,7 @@ function GeneratorModalContent() {
   const [isLoading, setIsLoading] = useState(false)
 
   const { toast } = useToast()
-  const { edgestore } = useEdgeStore()
+  const router = useRouter()
 
   const handleSubmit = async () => {
     setIsLoading(true)
@@ -49,40 +41,31 @@ function GeneratorModalContent() {
           colorPalette,
           enhancePrompt,
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error('Failed to generate images');
+        throw new Error('Failed to generate image')
       }
-  
-      const { url } = await response.json();
-  
-      // Upload image to EdgeStore
-      const res = await fetch(url);
-      const blob = await res.blob();
-      const file = new File([blob], `generated-image.png`, { type: blob.type });
 
-      const uploadedImage = await edgestore.myPublicImages.upload({
-        file,
-        input: { type: "thumbnail" },
-      });
-  
+      const { url } = await response.json()
+
       toast({
-        title: "Image generated and saved successfully",
-        description: "Check the gallery to view your generated image.",
-      });
-      setOpen(false);
+        title: "Image generated successfully",
+        description: "Check the gallery below to view your generated image.",
+      })
+      setOpen(false)
+      router.refresh() // This will refresh the page, including the gallery
     } catch (error) {
-      console.error('Error generating or saving image:', error);
+      console.error('Error generating image:', error)
       toast({
         title: "Error",
-        description: "Failed to generate or save image. Please try again.",
+        description: "Failed to generate image. Please try again.",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -123,7 +106,7 @@ function GeneratorModalContent() {
                   <SelectValue placeholder="Select image type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {["Digital Art", "Photorealistic", "3D Render", "Anime Style", "Watercolor", "Oil Painting", "Pixel Art", "Minimalist"].map((type) => (
+                  {[ "Realistic", "3D Render", "Anime", "Minimalistic", "Cartoon", "Cinematic",].map((type) => (
                     <SelectItem key={type} value={type.toLowerCase().replace(" ", "-")}>{type}</SelectItem>
                   ))}
                 </SelectContent>
@@ -140,7 +123,7 @@ function GeneratorModalContent() {
                   <SelectItem value="1:1">Instagram Post (1:1)</SelectItem>
                   <SelectItem value="9:16">Instagram Story (9:16)</SelectItem>
                   <SelectItem value="16:9">Twitter Post (16:9)</SelectItem>
-                  <SelectItem value="851:315">Facebook Cover (851:315)</SelectItem>
+                  <SelectItem value="16:9">Facebook Cover (16:9)</SelectItem>
                   <SelectItem value="custom">Custom Ratio</SelectItem>
                 </SelectContent>
               </Select>
