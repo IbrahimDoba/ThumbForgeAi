@@ -1,4 +1,6 @@
+// import { getSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import getSession from '@/lib/getSession';
 
 // import { getCurrentUser } from "@/lib/session";
 
@@ -7,12 +9,9 @@ import { redirect } from "next/navigation";
 // }
 
 export default async function AuthLayout({ children }) {
-  // const user = await getCurrentUser();
-
-  // if (user) {
-  //   if (user.role === "ADMIN") redirect("/admin");
-  //   redirect("/dashboard");
-  // }
+  const session = await getSession();
+  const user = session?.user;
+  if (user) redirect('/generate');
 
   return <div className="min-h-screen">{children}</div>;
 }

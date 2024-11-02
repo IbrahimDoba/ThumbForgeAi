@@ -4,9 +4,10 @@ import { JWT } from "next-auth/jwt";
 // Extend User type with additional fields
 export type ExtendedUser = User & {
   id: string;
-  email: string;
-  name: string;
-  image: string;
+  name: string | null;
+  email: string | null;
+  image?: string | null;
+  username: string | null;
   subscriptionPlan?: string;
 };
 

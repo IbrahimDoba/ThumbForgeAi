@@ -7,18 +7,30 @@ import { useTheme } from 'next-themes'
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
-import { Switch } from "@/components/ui/switch"
-import { Bell, Images, MoreVertical, HelpCircle, LogOut, Sun, Moon, Laptop, Home, MoreHorizontal } from 'lucide-react'
+import { Bell, Images, HelpCircle, LogOut, Sun, Moon, Laptop, Home, MoreHorizontal } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Icons } from '../shared/icons'
+import { signOut, useSession } from "next-auth/react"
+import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isOptionsOpen, setIsOptionsOpen] = useState(false)
   const { setTheme, theme } = useTheme()
+  const router = useRouter()
+  const { data: session, status } = useSession()
+
+  if (status === 'unauthenticated') {
+    redirect('/login')
+  }
+
+  const user = session?.user
+  const isFreeUser = user?.subscriptionPlan === 'free'
 
   return (
     <div className="flex min-h-screen">
@@ -41,25 +53,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Button variant="ghost" size="icon">
             <Bell className="h-6 w-6" />
           </Button>
-          <Avatar>
-            {/* <AvatarImage src="/placeholder-avatar.jpg" alt="User" /> */}
-            <AvatarFallback>U</AvatarFallback>
+          <Avatar className="h-10 w-10">
+            <AvatarImage src={user?.image || undefined} alt={user?.name || 'User'} />
+            <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
           </Avatar>
           <DropdownMenu open={isOptionsOpen} onOpenChange={setIsOptionsOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-6 w-6 bg-slate-900" />
+                <MoreHorizontal className="h-6 w-6 " />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuContent align="end" side="right" className="w-64 mr-20">
               <div className="flex items-center space-x-2 p-2">
                 <Avatar>
-                  {/* <AvatarImage src="/placeholder-avatar.jpg" alt="User" /> */}
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarImage src={user?.image || undefined} alt={user?.name || 'User'} />
+                  <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="text-sm font-medium">Username</p>
-                  <p className="text-xs text-muted-foreground">user@example.com</p>
+                  <p className="text-sm font-medium">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
               </div>
               <div className="p-2">
@@ -68,16 +80,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
               <DropdownMenuItem asChild>
                 <Button variant="outline" className="w-full justify-start">
-                  Upgrade Plan
+                  {isFreeUser ? 'Upgrade Plan (Free)' : 'Manage Subscription'}
                 </Button>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem className='cursor-pointer'>
                 <HelpCircle className="mr-2 h-4 w-4" />
                 <span>Help</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+              <DropdownMenuItem className='cursor-pointer' onClick={() => signOut()}>
+                <LogOut className="mr-2 h-4 w-4 " />
+                <span>Log Out</span>
               </DropdownMenuItem>
               <div className="p-2">
                 <p className="text-sm font-medium mb-2">Theme</p>
@@ -93,17 +105,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </Button>
                 </div>
               </div>
-              <div className="p-2 text-xs text-muted-foreground">
+              <div className="p-2 flex justify-around text-xs text-muted-foreground mt-4">
+                
                 <Link href="/terms" className="hover:underline">Terms</Link>
                 {' • '}
                 <Link href="/privacy" className="hover:underline">Privacy</Link>
-              </div>
-              <div className="p-2 flex justify-center space-x-2">
+              
                 <Link href="https://discord.gg/yourserver" target="_blank" rel="noopener noreferrer">
-                  <Image src="/discord-icon.png" alt="Discord" width={20} height={20} />
+                  <Icons.discord className="h-5 w-5" />
                 </Link>
                 <Link href="https://twitter.com/ibrahimdoba" target="_blank" rel="noopener noreferrer">
-                  <Image src="/twitter-icon.png" alt="Twitter" width={20} height={20} />
+                  <Icons.twitter className="h-5 w-5" />
                 </Link>
               </div>
             </DropdownMenuContent>

@@ -1,20 +1,24 @@
-import { pgTable, uuid, varchar, timestamp, text, boolean, pgEnum, serial, integer } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, text, boolean, pgEnum, serial, integer, json } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const subscriptionPlanEnum = pgEnum('subscription_plan', ['free', 'basic', 'premium', 'pro']);
 
-export const users = pgTable('users', {
+export const users = pgTable('user', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }),
+  username: text('username').unique().notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
+  bio: text('bio'),
+  socials: json('socials').$type<string[]>(),
+  location: text('location'),
   subscriptionPlan: subscriptionPlanEnum('subscriptionPlan').default('free'),
   createdAt: timestamp('createdAt').defaultNow(),
   updatedAt: timestamp('updatedAt').defaultNow(),
 });
 
-export const accounts = pgTable('accounts', {
+export const accounts = pgTable('account', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
   type: varchar('type', { length: 255 }).notNull(),
@@ -29,14 +33,14 @@ export const accounts = pgTable('accounts', {
   session_state: varchar('session_state', { length: 255 }),
 });
 
-export const sessions = pgTable('sessions', {
+export const sessions = pgTable('session', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
   sessionToken: varchar('sessionToken', { length: 255 }).notNull().unique(),
   expires: timestamp('expires', { mode: 'date' }).notNull(),
 });
 
-export const verificationTokens = pgTable('verificationTokens', {
+export const verificationTokens = pgTable('verificationToken', {
   identifier: varchar('identifier', { length: 255 }).notNull(),
   token: varchar('token', { length: 255 }).notNull().unique(),
   expires: timestamp('expires', { mode: 'date' }).notNull(),
@@ -44,7 +48,7 @@ export const verificationTokens = pgTable('verificationTokens', {
 
 export const generatedImages = pgTable('generated_images', {
   id: serial('id').primaryKey(),
-  // userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   imageUrl: text('image_url').notNull(),
   prompt: text('prompt').notNull(),
   thumbnailText: varchar('thumbnail_text', { length: 255 }),
@@ -62,12 +66,12 @@ export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
 }));
 
-// export const generatedImagesRelations = relations(generatedImages, ({ one }) => ({
-//   user: one(users, {
-//     fields: [generatedImages.userId],
-//     references: [users.id],
-//   }),
-// }));
+export const generatedImagesRelations = relations(generatedImages, ({ one }) => ({
+  user: one(users, {
+    fields: [generatedImages.userId],
+    references: [users.id],
+  }),
+}));
 
 // Types
 export type User = typeof users.$inferSelect;

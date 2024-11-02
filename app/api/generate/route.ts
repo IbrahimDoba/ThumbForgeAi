@@ -2,10 +2,18 @@
 import { NextResponse } from "next/server";
 
 import { db } from "@/lib/db";
-import { generatedImages } from "@/lib/schema";
+import { generatedImages } from "@/lib/db/schema";
+import getSession from "@/lib/getSession";
+import { validateRequest } from "@/lib/validateRequest";
 
 export async function POST(req: Request) {
   try {
+    await validateRequest();
+
+    const session = await getSession();
+    const user = session?.user;
+
+
     const params = await req.json();
     const {
       userPrompt,
@@ -17,23 +25,24 @@ export async function POST(req: Request) {
     } = params;
 
     // Construct the prompt based on user inputs
-    const basePrompt = `${imageType} thumbnail with ${colorPalette} colors, ${aspectRatio}. ${enhancePrompt ? "Enhanced" : "Simple"} 
-    design focusing on: ${userPrompt}. Text "${thumbnailText}" bold and readable, well-integrated with background.`;
-    // Send request to Ideogram API
+    const basePrompt = `${userPrompt}. Text "${thumbnailText}" bold and readable, well-integrated with background.`;
+
+    const imageRequest = {
+      prompt: basePrompt,
+      aspect_ratio: mapAspectRatio(aspectRatio),
+      model: "V_2",
+      magic_prompt_option: enhancePrompt ? "ON" : "OFF",
+      style_type: mapStyleType(imageType),
+      color_palette: mapColorPalette(colorPalette),
+    };
+
     const response = await fetch("https://api.ideogram.ai/generate", {
       method: "POST",
       headers: {
         "Api-Key": process.env.IDEOGRAM_AI_KEY!,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        image_request: {
-          prompt: basePrompt,
-          aspect_ratio: mapAspectRatio(aspectRatio),
-          model: "V_1_TURBO",
-          magic_prompt_option: "AUTO",
-        },
-      }),
+      body: JSON.stringify({ image_request: imageRequest }),
     });
 
     if (!response.ok) {
@@ -50,6 +59,8 @@ export async function POST(req: Request) {
 
     // Save the generated image URL to the database
     await db.insert(generatedImages).values({
+      userId: user?.id!,
+
       imageUrl: url,
       prompt: userPrompt,
       thumbnailText,
@@ -83,4 +94,30 @@ function mapAspectRatio(
     default:
       return "ASPECT_1_1"; // Default to square if unknown
   }
+}
+function mapStyleType(imageType: string): string {
+  const styleMap: { [key: string]: string } = {
+    "auto": "AUTO",
+    "realistic": "REALISTIC",
+    "3d-render": "RENDER_3D",
+    "anime": "ANIME",
+    "general": "GENERAL",
+    "design": "DESIGN",
+  };
+  return styleMap[imageType] || "AUTO";
+}
+
+function mapColorPalette(colorPalette: string): string {
+  const paletteMap: { [key: string]: string } = {
+    "auto": "AUTO",
+    "ember": "EMBER",
+    "fresh": "FRESH",
+    "jungle": "JUNGLE",
+    "magic": "MAGIC",
+    "melon": "MELON",
+    "mosaic": "MOSAIC",
+    "pastel": "PASTEL",
+    "ultramarine": "ULTRAMARINE",
+  };
+  return paletteMap[colorPalette] || "AUTO";
 }

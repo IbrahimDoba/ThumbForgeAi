@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { getCurrentUser } from "@/lib/session";
+import { getCurrentUser } from "@/lib/getSession";
 
 interface ProtectedLayoutProps {
   children: React.ReactNode;

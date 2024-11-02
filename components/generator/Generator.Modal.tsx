@@ -106,7 +106,7 @@ export default function GeneratorModal() {
                   <SelectValue placeholder="Select image type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[ "Realistic", "3D Render", "Anime", "Minimalistic", "Cartoon", "Cinematic",].map((type) => (
+                  {["Auto", "General", "Realistic", "3D Render", "Anime", "Design"].map((type) => (
                     <SelectItem key={type} value={type.toLowerCase().replace(" ", "-")}>{type}</SelectItem>
                   ))}
                 </SelectContent>
@@ -165,23 +165,12 @@ export default function GeneratorModal() {
                   <SelectValue placeholder="Select color palette" />
                 </SelectTrigger>
                 <SelectContent>
-                  {["Vibrant", "Pastel", "Monochrome", "Warm", "Cool", "Custom"].map((palette) => (
+                  {["Auto", "Ember", "Fresh", "Jungle", "Magic", "Melon", "Mosaic", "Pastel", "Ultramarine"].map((palette) => (
                     <SelectItem key={palette} value={palette.toLowerCase()}>{palette}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {colorPalette === "custom" && (
-              <div>
-                <Label htmlFor="custom-color">Custom Color</Label>
-                <Input
-                  id="custom-color"
-                  type="color"
-                  className="h-10 p-1"
-                  onChange={(e) => setColorPalette(e.target.value)}
-                />
-              </div>
-            )}
           </div>
         </div>
         <Button onClick={handleSubmit} className="mt-4" disabled={isLoading}>
