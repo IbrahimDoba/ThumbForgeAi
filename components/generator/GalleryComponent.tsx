@@ -18,7 +18,7 @@ export default function GalleryComponent({ images }: GalleryComponentProps) {
           key={image.id}
           image={image}
           user={image.user}
-          onClick={() => router.push(`/image/${image.id}`)}
+          onClick={() => router.push(`/image/${image.imageId}`)}
         />
       ))}
     </div>

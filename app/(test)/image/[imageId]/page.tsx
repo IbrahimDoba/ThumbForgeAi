@@ -4,7 +4,9 @@ import ImageDetailComponent from '@/components/generator/ImageDetailComponent';
 
 
 export default async function ImageDetailPage({ params }: { params: { imageId: string } }) {
-  const { image, otherUserImages, error } = await getImageDetails(params.imageId);
+  const imageId = await params.imageId; // Await the params
+
+  const { image, otherUserImages, error } = await getImageDetails(imageId);
 
   if (error === 'Image not found') {
     notFound();

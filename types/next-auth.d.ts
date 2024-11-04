@@ -7,8 +7,9 @@ export type ExtendedUser = User & {
   name: string | null;
   email: string | null;
   image?: string | null;
-  username: string | null;
-  subscriptionPlan?: string;
+  username: string;
+  subscriptionPlan: string;
+  credits: number;
 };
 
 // Extend JWT interface to include additional fields
@@ -17,8 +18,10 @@ declare module "next-auth/jwt" {
     id: string;
     email: string;
     name: string;
+    username: string;
     image: string;
-    subscriptionPlan?: string;
+    subscriptionPlan: string;
+    credits: number;
   }
 }
 

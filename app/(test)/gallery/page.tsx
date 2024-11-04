@@ -15,7 +15,7 @@ export default async function GalleryPage() {
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">All Generated Thumbnails</h1>
+        <h1 className="text-3xl font-bold">ThumbForge Gallery</h1>
         <Link href="/generate" passHref>
           <Button variant="outline">Back to Generator</Button>
         </Link>

@@ -14,6 +14,7 @@ export const users = pgTable('user', {
   socials: json('socials').$type<string[]>(),
   location: text('location'),
   subscriptionPlan: subscriptionPlanEnum('subscriptionPlan').default('free'),
+  credits: integer('credits').default(6),
   createdAt: timestamp('createdAt').defaultNow(),
   updatedAt: timestamp('updatedAt').defaultNow(),
 });
@@ -47,16 +48,20 @@ export const verificationTokens = pgTable('verificationToken', {
 });
 
 export const generatedImages = pgTable('generated_images', {
-  id: serial('id').primaryKey(),
+  id: serial('id'),
+  imageId: uuid('image_id').defaultRandom().notNull().primaryKey(), 
   userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   imageUrl: text('image_url').notNull(),
   prompt: text('prompt').notNull(),
   thumbnailText: varchar('thumbnail_text', { length: 255 }),
+  enhancedPrompt: text('enhanced_prompt'),
   imageType: varchar('image_type', { length: 50 }),
   aspectRatio: varchar('aspect_ratio', { length: 20 }),
   colorPalette: varchar('color_palette', { length: 50 }),
   enhancePrompt: varchar('enhance_prompt', { length: 5 }),
-  createdAt: timestamp('created_at').defaultNow().notNull()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  creditCost: integer('credit_cost').default(2),
+
 });
 
 // Relations

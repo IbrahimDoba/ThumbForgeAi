@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes'
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
-import { Bell, Images, HelpCircle, LogOut, Sun, Moon, Laptop, Home, MoreHorizontal } from 'lucide-react'
+import { Bell, Images, HelpCircle, LogOut, Sun, Moon, Laptop, Home, MoreHorizontal, CreditCard } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +31,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const user = session?.user
   const isFreeUser = user?.subscriptionPlan === 'free'
+  const maxCredits = getMaxCredits(user?.subscriptionPlan)
+  const creditsPercentage = (user?.credits! / maxCredits) * 100
+
+  function getMaxCredits(plan: string | undefined) {
+    switch (plan) {
+      case 'basic': return 100
+      case 'pro': return 300
+      case 'premium': return 1000
+      default: return 6
+    }
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -53,17 +64,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Button variant="ghost" size="icon">
             <Bell className="h-6 w-6" />
           </Button>
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={user?.image || undefined} alt={user?.name || 'User'} />
-            <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
-          </Avatar>
+          <Link href={`/user/${user?.username}`}>
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user?.image || undefined} alt={user?.name || 'User'} />
+              <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
+            </Avatar>
+          </Link>
           <DropdownMenu open={isOptionsOpen} onOpenChange={setIsOptionsOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <MoreHorizontal className="h-6 w-6 " />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="right" className="w-64 mr-20">
+            <DropdownMenuContent align="end" side="right" className="w-64 mr-24 ml-5 bg-[#18181B]">
               <div className="flex items-center space-x-2 p-2">
                 <Avatar>
                   <AvatarImage src={user?.image || undefined} alt={user?.name || 'User'} />
@@ -75,13 +88,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
               <div className="p-2">
-                <p className="text-sm font-medium">Credits remaining: 50/100</p>
-                <Progress value={50} className="mt-2" />
+                <p className="text-sm font-medium">Credits remaining: {user?.credits}/{maxCredits}</p>
+                <Progress value={creditsPercentage} className="mt-2" />
               </div>
               <DropdownMenuItem asChild>
-                <Button variant="outline" className="w-full justify-start">
-                  {isFreeUser ? 'Upgrade Plan (Free)' : 'Manage Subscription'}
-                </Button>
+                <Link href="/subscription">
+                  <Button variant="outline" className="w-full justify-start">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    {isFreeUser ? 'Upgrade Plan (Free)' : 'Manage Subscription'}
+                  </Button>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem className='cursor-pointer'>
                 <HelpCircle className="mr-2 h-4 w-4" />
@@ -106,11 +122,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
               <div className="p-2 flex justify-around text-xs text-muted-foreground mt-4">
-                
                 <Link href="/terms" className="hover:underline">Terms</Link>
                 {' • '}
                 <Link href="/privacy" className="hover:underline">Privacy</Link>
-              
                 <Link href="https://discord.gg/yourserver" target="_blank" rel="noopener noreferrer">
                   <Icons.discord className="h-5 w-5" />
                 </Link>

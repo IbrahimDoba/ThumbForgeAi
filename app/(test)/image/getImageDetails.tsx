@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 export async function getImageDetails(imageId: string) {
   try {
     const image = await db.query.generatedImages.findFirst({
-      where: eq(generatedImages.id, parseInt(imageId)),
+      where: eq(generatedImages.imageId, imageId),
       with: {
         user: true,
       },

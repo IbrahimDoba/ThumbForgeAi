@@ -4,17 +4,14 @@ import DiscordProvider from "next-auth/providers/discord"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { db } from "./lib/db"
 import { accounts, sessions, users } from "./lib/db/schema"
-import Google from "next-auth/providers/google"
-import Discord from "next-auth/providers/discord"
 import { generateUsername } from "./lib/services"
+import { eq } from "drizzle-orm"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
     // sessionsTable: sessions,
-
-
   }),
   session: {
     strategy: "jwt",
@@ -31,6 +28,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: profile.email,
           image: profile.picture || `https://avatar.vercel.sh/${profile.name}?size=30`,
           username,
+          subscriptionPlan: 'free',
+          credits: 6,
         } as User;
       },
     }),
@@ -45,29 +44,51 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: profile.email,
           image: profile.avatar ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png` : null,
           username,
+          subscriptionPlan: 'free',
+          credits: 6,
         } as User;
       },
     }),
   ],
-  
-  
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        
-        token.subscriptionPlan = user.subscriptionPlan
+        token.id = user.id;
+        token.username = user.username;
+        token.subscriptionPlan = user.subscriptionPlan;
+        token.credits = user.credits;
       }
-      return token
+      return token;
     },
+  
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string
-        session.user.subscriptionPlan = token.subscriptionPlan as string
+      if (token) {
+        // Set basic user info from the token
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.image = token.picture as string;
+        session.user.username = token.username as string;
+        session.user.subscriptionPlan = token.subscriptionPlan as string;
+        session.user.credits = token.credits as number;
+  
+        // Fetch the latest user data from the database
+        const dbUser = await db.query.users.findFirst({
+          where: eq(users.id, token.id as string),
+        });
+  
+        // Update session if the user is found in the database
+        if (dbUser) {
+          session.user.name = dbUser.name;
+          session.user.image = dbUser.image;
+          session.user.username = dbUser.username;
+          session.user.subscriptionPlan = dbUser.subscriptionPlan;
+          session.user.credits = dbUser.credits;
+        }
       }
-      console.log("session here",session)
-
-      return session
+  
+      console.log("Updated session:", session);
+      return session;
     },
   },
   pages: {

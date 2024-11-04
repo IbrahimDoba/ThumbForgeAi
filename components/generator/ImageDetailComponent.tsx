@@ -8,6 +8,8 @@ import { MoreHorizontal, Download, Share, FileText } from 'lucide-react';
 import { ImageCard } from '@/components/generator/ImageCard';
 import { GeneratedImage, User } from '@/lib/db/schema';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import Link from 'next/link';
 
 interface ImageDetailComponentProps {
   image: GeneratedImage & { user: User };
@@ -16,6 +18,9 @@ interface ImageDetailComponentProps {
 
 export default function ImageDetailComponent({ image, otherUserImages }: ImageDetailComponentProps) {
     const router = useRouter();
+    const [isPromptExpanded, setPromptExpanded] = useState(false);
+    const [isMagicPromptExpanded, setMagicPromptExpanded] = useState(false);
+
   return (
     <div className="container mx-auto py-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -35,6 +40,8 @@ export default function ImageDetailComponent({ image, otherUserImages }: ImageDe
         {/* Right side - Image Information */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
+          <Link href={`/user/${image?.user.username}`}>
+
             <div className="flex items-center space-x-4">
               <Avatar className="h-12 w-12">
                 <AvatarImage src={image.user.image || undefined} alt={image.user.name || 'User'} />
@@ -47,6 +54,7 @@ export default function ImageDetailComponent({ image, otherUserImages }: ImageDe
                 </p>
               </div>
             </div>
+            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -72,12 +80,38 @@ export default function ImageDetailComponent({ image, otherUserImages }: ImageDe
 
           <div className="space-y-2">
             <h3 className="font-semibold">Prompt</h3>
-            <p className="line-clamp-4">{image.prompt}</p>
+            <p className="line-clamp-4">
+              {isPromptExpanded ? image.prompt : `${image.prompt.slice(0, 250)}...`}
+            </p>
             {image.prompt.length > 250 && (
-              <Button variant="link" className="p-0 h-auto">Read more</Button>
+              <Button
+                variant="link"
+                className="p-0 h-auto"
+                onClick={() => setPromptExpanded(!isPromptExpanded)}
+              >
+                {isPromptExpanded ? "Read less" : "Read more"}
+              </Button>
             )}
           </div>
 
+           {/* Magic Prompt - Only show if `enhancePrompt` is true */}
+           {image.enhancePrompt === 'true' && (
+            <div className="space-y-2">
+              <h3 className="font-semibold">Magic Prompt</h3>
+              <p className="line-clamp-4">
+                {isMagicPromptExpanded ? image.enhancedPrompt : `${image?.enhancedPrompt!.slice(0, 250)}...`}
+              </p>
+              {image?.enhancedPrompt!.length > 250 && (
+                <Button
+                  variant="link"
+                  className="p-0 h-auto"
+                  onClick={() => setMagicPromptExpanded(!isMagicPromptExpanded)}
+                >
+                  {isMagicPromptExpanded ? "Read less" : "Read more"}
+                </Button>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h4 className="font-semibold">Enhanced</h4>
@@ -104,7 +138,7 @@ export default function ImageDetailComponent({ image, otherUserImages }: ImageDe
         <h2 className="text-2xl font-bold mb-4">More by {image.user.name}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {otherUserImages.map((otherImage) => (
-            <ImageCard key={otherImage.id} image={otherImage} user={otherImage.user} onClick={() => router.push(`/image/${otherImage.id}`)}
+            <ImageCard key={otherImage.id} image={otherImage} user={otherImage.user} onClick={() => router.push(`/image/${otherImage.imageId}`)}
             />
           ))}
         </div>

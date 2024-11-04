@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/navigation'
+import { colorPresets } from "@/app/api/generate/helpers"
 
 export default function GeneratorModal() {
   const [open, setOpen] = useState(false)
@@ -159,14 +160,33 @@ export default function GeneratorModal() {
               <Label htmlFor="enhance-prompt">Enhance Prompt</Label>
             </div>
             <div>
-              <Label htmlFor="color-palette">Color Palette</Label>
+            <Label htmlFor="color-palette">Color Palette</Label>
               <Select onValueChange={setColorPalette} value={colorPalette}>
                 <SelectTrigger id="color-palette">
                   <SelectValue placeholder="Select color palette" />
                 </SelectTrigger>
                 <SelectContent>
-                  {["Auto", "Ember", "Fresh", "Jungle", "Magic", "Melon", "Mosaic", "Pastel", "Ultramarine"].map((palette) => (
-                    <SelectItem key={palette} value={palette.toLowerCase()}>{palette}</SelectItem>
+                  <SelectItem value="auto">
+                    <div className="flex items-center">
+                      <span className="mr-2">Auto</span>
+                      <div className="w-4 h-4 bg-gradient-to-r from-red-500 via-green-500 to-blue-500 rounded-sm"></div>
+                    </div>
+                  </SelectItem>
+                  {Object.entries(colorPresets).map(([name, colors]) => (
+                    <SelectItem key={name} value={name.toLowerCase()}>
+                      <div className="flex items-center">
+                        <span className="mr-2">{name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}</span>
+                        <div className="flex">
+                          {colors.map((color, index) => (
+                            <div
+                              key={index}
+                              className="w-4 h-4 rounded-sm space-x-4"
+                              style={{ backgroundColor: color.color_hex, marginLeft: '2px' }}
+                            ></div>
+                          ))}
+                        </div>
+                      </div>
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
