@@ -10,7 +10,7 @@ import getSession from '@/lib/getSession';
 export default async function AuthLayout({ children }) {
   const session = await getSession();
   const user = session?.user;
-  // if (user) redirect('/generate');
+  if (user) redirect('/generate');
 
   return <div className="min-h-screen">{children}</div>;
 }

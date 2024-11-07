@@ -40,7 +40,7 @@ export default function ImageDetailComponent({ image, otherUserImages }: ImageDe
         {/* Right side - Image Information */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-          <Link href={`/user/${image?.user.username}`}>
+          <Link href={`/${image?.user.username}`}>
 
             <div className="flex items-center space-x-4">
               <Avatar className="h-12 w-12">

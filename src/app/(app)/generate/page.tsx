@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import GalleryComponent from '@/components/generator/GalleryComponent';
 import GeneratorModal from '@/components/generator/Generator.Modal';
 import { getUserGeneratedImages } from './GetUserGeneratedImages';
+import GalleryComponent from '@/components/generator/GalleryComponent';
 
 export default async function GeneratePage() {
   const { images, error } = await getUserGeneratedImages();

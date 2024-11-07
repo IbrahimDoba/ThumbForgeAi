@@ -55,7 +55,7 @@ export default function UserProfileComponent({ user, isOwnProfile }: UserProfile
                 key={image.id} 
                 image={image} 
                 user={user} 
-                onClick={() => router.push(`/images/${image.id}`)}
+                onClick={() => router.push(`/image/${image.imageId}`)}
               />
             ))}
           </div>

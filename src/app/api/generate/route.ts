@@ -81,14 +81,13 @@ export async function POST(req: Request) {
       thumbnailText,
       imageType,
       aspectRatio,
-      colorPalette,
+      colorPalette, // fix auto color option
       enhancePrompt: enhancePrompt ? "true" : "false",
       creditCost: 2,
     });
 
     return NextResponse.json({ url, enhancedPromptText }, { status: 200 });
 
-    return NextResponse.json({ url, enhancedPromptText }, { status: 200 });
   } catch (error) {
     console.error("Error generating images:", error);
     return NextResponse.json(
@@ -97,4 +96,3 @@ export async function POST(req: Request) {
     );
   }
 }
-

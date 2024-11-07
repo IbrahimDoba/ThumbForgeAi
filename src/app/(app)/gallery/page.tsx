@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { getAllGeneratedImages } from './getAllGeneratedImages';
 import GalleryComponent from '@/components/generator/GalleryComponent';
+import { getAllGeneratedImages } from './getAllGeneratedImages';
 
 
 export default async function GalleryPage() {

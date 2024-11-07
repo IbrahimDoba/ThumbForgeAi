@@ -1,26 +1,17 @@
-import DiscordProvider from "next-auth/providers/discord"
+import NextAuth, { User } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
+import DiscordProvider from "next-auth/providers/discord"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
-<<<<<<< HEAD:auth.ts
 import { db } from "./lib/db"
 import { accounts, sessions, users } from "./lib/db/schema"
 import { generateUsername } from "./lib/services"
 import { eq } from "drizzle-orm"
-=======
-import { accounts, users } from "./lib/db/schema"
-import { generateUsername } from "./lib/services"
-import NextAuth, { User } from "next-auth"
-import { db } from "./lib/db"
->>>>>>> 4070b60492946818682513b7d22237085144691e:src/auth.ts
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
-<<<<<<< HEAD:auth.ts
     // sessionsTable: sessions,
-=======
->>>>>>> 4070b60492946818682513b7d22237085144691e:src/auth.ts
   }),
   session: {
     strategy: "jwt",
